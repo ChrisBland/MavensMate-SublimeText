@@ -30,6 +30,8 @@ from datetime import datetime
 if os.name != 'nt':
     import unicodedata
 
+from decimal import *
+
 #PLUGIN_DIRECTORY = os.getcwd().replace(os.path.normpath(os.path.join(os.getcwd(), '..', '..')) + os.path.sep, '').replace(os.path.sep, '/')
 #for future reference (windows/linux support)
 #sublime.packages_path()
@@ -57,6 +59,18 @@ def mm_call(operation, mm_debug_panel=True, **kwargs):
     settings = sublime.load_settings('mavensmate.sublime-settings')
     if operation != 'new_project' and operation != 'new_project_from_existing_directory' and is_project_legacy() == True:
         operation = 'upgrade_project'
+    
+    try:
+        dic = plistlib.readPlist(os.path.join(settings.get('mm_app_location'), 'Contents', 'Info.plist'))
+        if 'CFBundleVersion' in dic:
+            mm_version = Decimal(dic['CFBundleVersion'])
+            if mm_version > 0.34:
+                message = '[OPERATION FAILED]: You are running a version of MavensMate.app that is not compatible with Sublime Text 2. Please install v0.34 of MavensMate: https://github.com/joeferraro/MavensMate-SublimeText#sublime-text-2-plugin-no-longer-supported)'
+                printer.write('\n'+message+'\n')
+                return
+    except:
+        pass
+
     if not os.path.exists(settings.get('mm_location')):
         active_window_id = sublime.active_window().id()
         printer = PanelPrinter.get(active_window_id)
