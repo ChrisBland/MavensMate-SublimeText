@@ -31,8 +31,6 @@ from datetime import datetime
 if os.name != 'nt':
     import unicodedata
 
-from decimal import *
-
 #PLUGIN_DIRECTORY = os.getcwd().replace(os.path.normpath(os.path.join(os.getcwd(), '..', '..')) + os.path.sep, '').replace(os.path.sep, '/')
 #for future reference (windows/linux support)
 #sublime.packages_path()
@@ -64,7 +62,7 @@ def mm_call(operation, mm_debug_panel=True, **kwargs):
     try:
         dic = plistlib.readPlist(os.path.join(settings.get('mm_app_location'), 'Contents', 'Info.plist'))
         if 'CFBundleVersion' in dic:
-            mm_version = Decimal(dic['CFBundleVersion'])
+            mm_version = float(dic['CFBundleVersion'])
             if mm_version > 0.34:
                 active_window_id = sublime.active_window().id()
                 printer = PanelPrinter.get(active_window_id)
