@@ -66,10 +66,14 @@ def mm_call(operation, mm_debug_panel=True, **kwargs):
         if 'CFBundleVersion' in dic:
             mm_version = Decimal(dic['CFBundleVersion'])
             if mm_version > 0.34:
+                active_window_id = sublime.active_window().id()
+                printer = PanelPrinter.get(active_window_id)
+                printer.show()
                 message = '[OPERATION FAILED]: You are running a version of MavensMate.app that is not compatible with Sublime Text 2. Please install v0.34 of MavensMate: https://github.com/joeferraro/MavensMate-SublimeText#sublime-text-2-plugin-no-longer-supported)'
                 printer.write('\n'+message+'\n')
                 return
-    except:
+    except BaseException, e:
+        print e
         pass
 
     if not os.path.exists(settings.get('mm_location')):
